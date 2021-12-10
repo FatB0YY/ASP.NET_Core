@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RR_hookah.Data;
 using RR_hookah.Models;
 
@@ -17,22 +18,23 @@ namespace RR_hookah.Controllers
             _db = db;
         }
 
+
         public IActionResult Index()
         {
             IEnumerable<Category> objList = _db.Category;
             return View(objList);
         }
 
-        // get - create 
+
+        //GET - CREATE
         public IActionResult Create()
         {
             return View();
         }
 
-        // post - create
-        // явно определяем что это action метод типа post
+
+        //POST - CREATE
         [HttpPost]
-        // токен защиты от взлома для форм
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
         {
@@ -41,21 +43,21 @@ namespace RR_hookah.Controllers
                 _db.Category.Add(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
-            } else
-            {
-                return View(obj);
             }
+            return View(obj);
+
         }
 
-        // get - edit 
+
+        //GET - EDIT
         public IActionResult Edit(int? id)
         {
-             if(id == null || id == 0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
             var obj = _db.Category.Find(id);
-            if(obj == null)
+            if (obj == null)
             {
                 return NotFound();
             }
@@ -63,7 +65,7 @@ namespace RR_hookah.Controllers
             return View(obj);
         }
 
-        // post - edit 
+        //POST - EDIT
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Category obj)
@@ -74,13 +76,11 @@ namespace RR_hookah.Controllers
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(obj);
-            }
+            return View(obj);
+
         }
 
-        // get - delete 
+        //GET - DELETE
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
@@ -96,8 +96,7 @@ namespace RR_hookah.Controllers
             return View(obj);
         }
 
-
-        // post - delete 
+        //POST - DELETE
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
@@ -106,15 +105,13 @@ namespace RR_hookah.Controllers
             if (obj == null)
             {
                 return NotFound();
-            } else
-            {
-                _db.Category.Remove(obj);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
             }
+            _db.Category.Remove(obj);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+
+
         }
+
     }
 }
-
-
-// 
