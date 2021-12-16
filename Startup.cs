@@ -4,12 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RR_hookah.Data;
-
+using RR_hookah.Utility;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 namespace RR_hookah
 {
     public class Startup
@@ -25,6 +29,33 @@ namespace RR_hookah
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+
+
+            
+
+            
+
+            
+
+
+
+
+
+
+            // для ролей
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddDefaultTokenProviders().AddDefaultUI()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddHttpContextAccessor();
+            services.AddSession(Options =>
+            {
+                Options.IdleTimeout = TimeSpan.FromMinutes(10);
+                Options.Cookie.HttpOnly = true;
+                Options.Cookie.IsEssential = true;
+            });
+
             services.AddControllersWithViews();
         }
 
@@ -48,11 +79,22 @@ namespace RR_hookah
             app.UseStaticFiles();
             // роутинг, те маршруты
             app.UseRouting();
+
+            // аутентификация
+            app.UseAuthentication();
+
             // авторизация
             app.UseAuthorization();
+
+            // middleware для обработки сессий
+            app.UseSession();
+
+
             // порядок имеет значение 
             app.UseEndpoints(endpoints =>
             {
+                // для razor страниц
+                endpoints.MapRazorPages();
                 // маршрут по умолчанию MVC
                 // однако также еще есть razer итд
                 endpoints.MapControllerRoute(

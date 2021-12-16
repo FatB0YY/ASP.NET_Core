@@ -171,11 +171,9 @@ namespace RR_hookah.Controllers
             {
                 return NotFound();
             }
-
-            Product product = _db.Product.Include(u=>u.Category).FirstOrDefault(u=>u.Id==id);
-            
-            var obj = _db.Product.Find(id);
-            if (obj == null)
+            Product product = _db.Product.Include(u => u.Category).FirstOrDefault(u => u.Id == id);
+            //product.Category = _db.Category.Find(product.CategoryId);
+            if (product == null)
             {
                 return NotFound();
             }

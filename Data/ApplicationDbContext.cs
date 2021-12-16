@@ -1,4 +1,4 @@
-﻿// using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RR_hookah.Models;
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace RR_hookah.Data
 {
     // создаем DbContext
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
