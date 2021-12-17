@@ -14,6 +14,8 @@ using RR_hookah.Data;
 using RR_hookah.Utility;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
+
 namespace RR_hookah
 {
     public class Startup
@@ -30,17 +32,9 @@ namespace RR_hookah
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-
-
-            
-
-            
-
-            
-
-
-
-
+            // локализация
+            services.AddLocalization(opt => { opt.ResourcesPath = "Recourses";  });
+            services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
 
 
             // для ролей
@@ -89,6 +83,11 @@ namespace RR_hookah
             // middleware для обработки сессий
             app.UseSession();
 
+
+            // локализация
+            var supportedCultres = new[] { "ru", "en" };
+            var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultres[0]).AddSupportedCultures(supportedCultres).AddSupportedUICultures(supportedCultres);
+            app.UseRequestLocalization(localizationOptions);
 
             // порядок имеет значение 
             app.UseEndpoints(endpoints =>
